@@ -21,8 +21,8 @@ def generate_audio(text="No input text provided", language='en', output_file="/t
         voice_code = 'ZiraRUS'
         gender = 'Female'  # Male or Female
     elif language == 'ar':
-        language_code = 'ar-SA'  # TODO: Enter codes
-        voice_code = 'Naayf'  # TODO: Enter codes
+        language_code = 'ar-SA'
+        voice_code = 'Naayf'
         gender = 'Male'  # Male or Female
     else:
         return None
