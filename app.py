@@ -1,7 +1,7 @@
 # test in shell: curl -i -H "Content-Type: application/json" -X POST -d '{"text":"Texto de prueba para ver que funciona", "language": "es"}' http://localhost:5000/generate_audio -o test.mp3
 #  ! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, abort
 import http.client, os
 from lxml import etree
 
@@ -24,6 +24,8 @@ def generate_audio(text="No input text provided", language='en', output_file="/t
         language_code = 'ar-SA'  # TODO: Enter codes
         voice_code = 'Naayf'  # TODO: Enter codes
         gender = 'Male'  # Male or Female
+    else:
+        return None
     # How to get a new API key:
     # Free: https://www.microsoft.com/cognitive-services/en-us/subscriptions?productId=/products/Bing.Speech.Preview
     # Paid: https://portal.azure.com/#create/Microsoft.CognitiveServices/apitype/Bing.Speech/pricingtier/S0
@@ -96,6 +98,8 @@ def process_posted_input():
     if not request.json:
         abort(400)
     file_name = generate_audio(request.json['text'], request.json['language'])
+    if file_name is None:
+        abort(400)
     return send_file(file_name), 201
 
 
