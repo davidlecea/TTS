@@ -8,7 +8,7 @@ from lxml import etree
 app = Flask(__name__)
 
 
-def generate_audio(text="No hay texto", language='es', output_file="/tmp/temp_output.mp3"):
+def generate_audio(text="No input text provided", language='en', output_file="/tmp/temp_output.mp3"):
     # Selection of language and voice.
     # All options listed here:
     # https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/bingvoiceoutput
@@ -24,12 +24,12 @@ def generate_audio(text="No hay texto", language='es', output_file="/tmp/temp_ou
         language_code = 'ar-SA'  # TODO: Enter codes
         voice_code = 'Naayf'  # TODO: Enter codes
         gender = 'Male'  # Male or Female
-    # API key stored in separate file: credentials.json
-    # Note: The way to get API key:
+    # How to get a new API key:
     # Free: https://www.microsoft.com/cognitive-services/en-us/subscriptions?productId=/products/Bing.Speech.Preview
     # Paid: https://portal.azure.com/#create/Microsoft.CognitiveServices/apitype/Bing.Speech/pricingtier/S0
     # with open('credentials.json') as credentials:
     #     API_key = json.load(credentials)['apiKey']
+    # API key stored in environment variable
     API_key = os.environ['API_KEY']
     params = ""
     headers = {"Ocp-Apim-Subscription-Key": API_key}
@@ -44,10 +44,8 @@ def generate_audio(text="No hay texto", language='es', output_file="/tmp/temp_ou
     conn.request("POST", path, params, headers)
     response = conn.getresponse()
     print(response.status, response.reason)
-
     data = response.read()
     conn.close()
-
     access_token = data.decode("UTF-8")
     print("Access Token: " + access_token)
 
@@ -60,11 +58,11 @@ def generate_audio(text="No hay texto", language='es', output_file="/tmp/temp_ou
 
     # Divide input text into blocks that are under the limit of 1,024 characters
     text_blocks = []
-    while len(text) > 600:
+    while len(text) > 850:
         begin = 0
-        end = text.find(".", 600)
+        end = text.find(".", 850)
         if end == -1:
-            end = text.find(" ", 600)
+            end = text.find(" ", 850)
         text_block = text[begin:end]
         text = text[end:]
         text_blocks.append(text_block)
