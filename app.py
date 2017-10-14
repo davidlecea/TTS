@@ -103,7 +103,7 @@ def process_posted_input():
 
 @app.route('/')
 def home_page():
-    return "This is the home page of the text-to-speech server"
+    return "This is the home page of the text-to-speech server testing Heroku deployment"
 
 
 if __name__ == '__main__':
