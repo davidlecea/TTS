@@ -1,8 +1,8 @@
 # test in shell: curl -i -H "Content-Type: application/json" -X POST -d '{"text":"Texto de prueba para ver que funciona", "language": "es"}' http://localhost:5000/generate_audio -o test.mp3
 #  ! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-from flask import Flask, request, send_file, abort
 import http.client, os
+from flask import Flask, request, send_file, abort
 from lxml import etree
 
 app = Flask(__name__)
