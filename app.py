@@ -2,14 +2,13 @@
 #  ! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 from flask import Flask, request, send_file
-import http.client, json
+import http.client, os
 from lxml import etree
 
 app = Flask(__name__)
 
 
 def generate_audio(text="No hay texto", language='es', output_file="/tmp/temp_output.mp3"):
-
     # Selection of language and voice.
     # All options listed here:
     # https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/bingvoiceoutput
@@ -29,8 +28,9 @@ def generate_audio(text="No hay texto", language='es', output_file="/tmp/temp_ou
     # Note: The way to get API key:
     # Free: https://www.microsoft.com/cognitive-services/en-us/subscriptions?productId=/products/Bing.Speech.Preview
     # Paid: https://portal.azure.com/#create/Microsoft.CognitiveServices/apitype/Bing.Speech/pricingtier/S0
-    with open('credentials.json') as credentials:
-        API_key = json.load(credentials)['apiKey']
+    # with open('credentials.json') as credentials:
+    #     API_key = json.load(credentials)['apiKey']
+    API_key = os.environ['API_KEY']
     params = ""
     headers = {"Ocp-Apim-Subscription-Key": API_key}
 
