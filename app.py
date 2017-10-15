@@ -58,17 +58,25 @@ def generate_audio(text="No input text provided", language='en', output_file="/t
     voice.set('{http://www.w3.org/XML/1998/namespace}gender', gender)
     voice.set('name', 'Microsoft Server Speech Text to Speech Voice (' + language_code + ', ' + voice_code + ')')
 
-    # Divide input text into blocks that are under the limit of 1,024 characters
+    # Divide input text into blocks that are under the limit of 1,024 characters for each request
+    # Arabic language occupies many more characters per letter, hence it's sliced into smaller blocks
+    if language == 'ar':
+        max_length = 150
+    else:
+        max_length = 700
     text_blocks = []
-    while len(text) > 850:
+    while len(text) > max_length:
         begin = 0
-        end = text.find(".", 850)
+        end = text.rfind(".", begin, max_length)
         if end == -1:
-            end = text.find(" ", 850)
+            end = text.rfind(" ", max_length)
         text_block = text[begin:end]
         text = text[end:]
         text_blocks.append(text_block)
     text_blocks.append(text)
+    for b in text_blocks:
+        print("Longitud: " + str(len(b)))
+        print("Texto: " + b)
 
     headers = {"Content-type": "application/ssml+xml",
                "X-Microsoft-OutputFormat": "audio-16khz-128kbitrate-mono-mp3",
@@ -83,6 +91,10 @@ def generate_audio(text="No input text provided", language='en', output_file="/t
     with open(output_file, "wb") as f:
         for text_block in text_blocks:
             voice.text = text_block
+            # TODO: delete these 2 lines for release
+            print(("POST" + "/synthesize" + str(etree.tostring(body)) + str(headers)))
+            print("Tamaño request: " + str(
+                len("POST" + "/synthesize" + str(etree.tostring(body, encoding='unicode')) + str(headers))))
             conn.request("POST", "/synthesize", etree.tostring(body), headers)
             response = conn.getresponse()
             print(response.status, response.reason)
