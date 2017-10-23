@@ -1,6 +1,5 @@
 #  ! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Test Codeanywhere again
 
 import http.client, os
 from flask import Flask, request, send_file, abort
@@ -47,6 +46,8 @@ def generate_audio(text="No input text provided", language='en', output_file="/t
     conn.request("POST", path, params, headers)
     response = conn.getresponse()
     print(response.status, response.reason)
+    if response.status != 200:
+        abort(response.status)
     data = response.read()
     conn.close()
     access_token = data.decode("UTF-8")
